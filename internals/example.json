@@ -1,0 +1,16 @@
+{
+	<#
+
+	This is an example json file used to modify values
+	found within the documents "Info" section
+
+	#>
+	"title":"A Modified Title",
+	"subject":"A Modified Subject",
+	"creator":"Modified Creator",
+	"keywords":"some, keywords, tags",
+	"description":"Modified comments field",
+	"lastModifiedBy":"Last Modifiedby",
+	"created":"2020-08-25T19:24:01Z",
+	"modified":"2020-08-25T19:24:02Z"
+}

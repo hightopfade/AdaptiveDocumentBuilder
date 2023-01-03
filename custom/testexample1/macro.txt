@@ -1,0 +1,13 @@
+Sub AutoOpen()
+	MsgBox "hello from adversary aVAR1a"
+	MsgBox "hello from adversary aVAR1a"
+	MsgBox "hello from adversary aVAR1a"
+	MsgBox "hello from adversary aVAR1a"
+	MsgBox "hello from adversary aVAR2a"
+	MsgBox "hello from adversary aVAR3a"
+	MsgBox "hello from adversary aVAR4a"
+	MsgBox "hello from adversary aVAR5a"
+	MsgBox "hello from adversary aVAR6a"
+	MsgBox "hello from adversary aFUNC1a"
+	MsgBox "hello from adversary aFUNC2a"
+End Sub

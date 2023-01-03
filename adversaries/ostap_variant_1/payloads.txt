@@ -1,0 +1,2 @@
+http://10.0.0.45:8000/example.vbe
+C:\Users\ebfe\Desktop\encoded.vbe

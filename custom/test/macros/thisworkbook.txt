@@ -1,0 +1,7 @@
+Private Sub FDSA()
+	If WelcomeDialog.Visible = True Then
+		Exit Sub
+	EndIf
+
+	Module5.RedButton 19999
+End Sub

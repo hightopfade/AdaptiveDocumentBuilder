@@ -1,0 +1,6 @@
+Private Sub UserForm_Activate()
+    DoEvents
+    DoEvents
+    MsgBox "testing"
+    DoEvents
+End Sub

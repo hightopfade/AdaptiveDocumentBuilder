@@ -1,0 +1,5 @@
+Public Property Get CheckCar(car As Variant, Drive As String)
+
+    CheckCar = car.SpecialFolders("" & Drive)
+
+End Property

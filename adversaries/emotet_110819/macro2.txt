@@ -1,0 +1,14 @@
+Function aFUNC1a(aVAR1a)
+On Error Resume Next
+
+aFUNC1a = aFUNC2a(aFUNC2a(aFUNC2a(aFUNC2a(aVAR1a))))
+
+End Function
+
+Function aFUNC2a(aVAR2a)
+
+aVAR3a = "ashn"
+
+aFUNC2a = Replace(aVAR2a, aVAR3a, "")
+
+End Function

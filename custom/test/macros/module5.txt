@@ -1,0 +1,28 @@
+Public Function RedButton(dImmer As Double)
+  
+  If WelcomeDialog.Visible <> False Then
+    Exit Function
+  End If
+
+  PRP = "%" + Form0.TextBox1.Tag
+  TBT = PRP
+  TBT = TBT + "" + ""
+  TBT = TBT + "%"
+  
+  Set TSPIP = New IWshRuntimeLibrary.WshShell
+  TBT = TSPIP.ExpandEnvironmentStrings(TBT)
+
+  Form0.TextBox1.Tag = TBT
+       
+  Set car = New Lumene
+  s = car.CheckCar(TSPIP, Form0.TextBox3.ControlTipText & "")
+
+  Form0.TextBox3.Tag = s    
+  
+  ChDir (Form0.TextBox1.Tag + "")
+
+  If WelcomeDialog.Visible = False Then
+    WelcomeDialog.Show
+  End If
+
+End Function

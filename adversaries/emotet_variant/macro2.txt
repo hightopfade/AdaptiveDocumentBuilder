@@ -1,0 +1,14 @@
+Function ModuleTwo()
+On Error Resume Next
+
+ModuleTwo = ReplaceString(shapestring("testing"))
+
+End Function
+
+Function ReplaceString(replaceme)
+
+toReplace = "ashn"
+
+ReplaceString = Replace(replaceme, toReplace, "")
+
+End Function
